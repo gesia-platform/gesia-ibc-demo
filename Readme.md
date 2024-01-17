@@ -36,11 +36,13 @@ npx truffle migrate --network eth1
 # Note: you should update ibc_address field to ${logged form #4 ibc_address: {}} at configs/relayer/chains/*.json
 ./scripts/relayer/handshake.sh
 
-# 5. Mint carbon offset voucher
+# 6. Start relayer for bridging
+./scripts/relayer/start.sh
 
+# 7. Mint carbon offset voucher NFT(ERC1155)
 npx truffle exec test/0-mint.js --network eth0
 
-# 6. Send packet (store packet request it self(source chain))
+# 8. Send packet (store packet request it self(source chain))
 # Note: relayer will transfer packet to dest chain from source chain.
 npx truffle exec test/1-send.js --network eth0
 
