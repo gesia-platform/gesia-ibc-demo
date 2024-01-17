@@ -1,0 +1,21 @@
+{
+  "name": "demo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "truffle": "5.8.4"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.4.2",
+    "solidity-mpt": "^0.1.0",
+    "solidity-rlp": "^2.0.8",
+    "@truffle/hdwallet-provider": "^1.2.2"
+  }
+}

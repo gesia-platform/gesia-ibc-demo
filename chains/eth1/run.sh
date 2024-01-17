@@ -1,0 +1,14 @@
+#!/bin/sh
+
+/usr/local/bin/geth \
+  --password /root/password \
+  --syncmode full \
+  --http --http.vhosts "*" --http.addr "0.0.0.0" --http.port "8555" --http.api web3,eth,net,personal,miner,txpool --http.corsdomain '*' \
+  --ws --ws.api eth,net,web3,personal,txpool --ws.addr "0.0.0.0" --ws.port "8556" --ws.origins '*' \
+  --datadir /root/.ethereum --networkid "16" \
+  --nodiscover \
+  --port 30313 \
+  --unlock "0xa89F47C6b463f74d87572b058427dA0A13ec5425" \
+  --allow-insecure-unlock \
+  --mine --miner.etherbase=0xa89F47C6b463f74d87572b058427dA0A13ec5425 \
+  $@
