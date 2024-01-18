@@ -20,7 +20,7 @@ npm install
 
 # 2. Build
 npx truffle compile
-docker compose build --no-cache
+cd chains && docker compose build --no-cache && cd ..
 cd relayer && go build -o ../build/relayer . && cd ..
 
 # 3. Run chains A, B

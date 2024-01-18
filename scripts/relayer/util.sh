@@ -14,7 +14,7 @@ RLY="${RLY_BINARY} --home ${RELAYER_CONF}"
 
 println "Loaded relayer command: $RLY"
 
-CHAINID_ONE=ibc0
-CHAINID_TWO=ibc1
-PATH_NAME=ibc01
+CHAINID_ONE=eth0
+CHAINID_TWO=eth1
+PATH_NAME=eth01
 

@@ -1,7 +1,7 @@
 {
   "chain": {
     "@type": "/relayer.chains.ethereum.config.ChainConfig",
-    "chain_id": "ibc1",
+    "chain_id": "eth1",
     "eth_chain_id": 16,
     "rpc_addr": "http://127.0.0.1:8555",
     "hdw_mnemonic": "math razor capable expose worth grape metal sunset metal sudden usage scheme",
