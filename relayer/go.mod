@@ -3,8 +3,8 @@ module demo
 go 1.20
 
 require (
-	github.com/datachainlab/ethereum-ibc-relay-chain v0.2.3
-	github.com/hyperledger-labs/yui-relayer v0.4.8
+	github.com/datachainlab/ethereum-ibc-relay-chain v0.2.10
+	github.com/hyperledger-labs/yui-relayer v0.4.20
 )
 
 require (

@@ -8,11 +8,15 @@ source ${SCRIPT_DIR}/util.sh
 
 rm -rf ${RELAYER_CONF} &> /dev/null
 
+sleep 5
+
 ${RLY} config init
 ${RLY} chains add-dir ${CONF_DIR}/relayer/chains/
 
 # add a path between eth0 and eth1
 $RLY paths add $CHAINID_ONE $CHAINID_TWO $PATH_NAME --file=${CONF_DIR}/relayer/path.json
+
+sleep 5
 
 # handshake
 set -x

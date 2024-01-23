@@ -5,7 +5,6 @@ services:
     ports:
       - 8545:8545
       - 8546:8546
-      - 30303:30303
     extra_hosts:
       - "host.docker.internal:host-gateway"
   eth1:
@@ -13,6 +12,5 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     ports:
-      - 8555:8555
-      - 8556:8556
-      - 30313:30313
+      - 8645:8545
+      - 8646:8546

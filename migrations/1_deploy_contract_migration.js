@@ -18,15 +18,10 @@ const MockClientType = "mock-client";
 
 const deployCore = async (deployer) => {
   await deployer.deploy(IBCClient);
-  console.log("deployed IBCClient");
   await deployer.deploy(IBCConnectionSelfStateNoValidation);
-  console.log("deployed IBCConnectionSelfStateNoValidation");
   await deployer.deploy(IBCChannelHandshake);
-  console.log("deployed IBCChannelHandshake");
   await deployer.deploy(IBCChannelPacketSendRecv);
-  console.log("deployed IBCChannelPacketSendRecv");
   await deployer.deploy(IBCChannelPacketTimeout);
-  console.log("deployed IBCChannelPacketTimeout");
 
   await deployer.deploy(
     IBCHandler,
@@ -36,37 +31,29 @@ const deployCore = async (deployer) => {
     IBCChannelPacketSendRecv.address,
     IBCChannelPacketTimeout.address
   );
-  console.log("deployed IBCHandler");
 
   await deployer.deploy(MockClient, IBCHandler.address);
-  console.log("deployed MockClient");
 };
 
 const deployApp = async (deployer) => {
   await deployer.deploy(CarbonOffsetVoucher, IBCHandler.address);
-  console.log("deployed CarbonOffsetVoucher");
 };
 
-const init = async (deployer) => {
+const bind = async (deployer) => {
   const ibcHandler = await IBCHandler.deployed();
 
-  for (const promise of [
-    () => ibcHandler.bindPort(PortTransfer, CarbonOffsetVoucher.address),
-    () => ibcHandler.registerClient(MockClientType, MockClient.address),
-  ]) {
-    const result = await promise();
-    if (!result.receipt.status) {
-      throw new Error(`transaction failed to execute. ${result.tx}`);
-    } else {
-      console.log("binded");
-    }
-  }
+  await ibcHandler.bindPort(PortTransfer, CarbonOffsetVoucher.address);
+  console.log("binded port: ", PortTransfer);
+
+  await ibcHandler.registerClient(MockClientType, MockClient.address);
+
+  console.log("registered client: ", MockClientType, MockClient.address);
 };
 
 module.exports = async function (deployer, network) {
   await deployCore(deployer);
   await deployApp(deployer);
-  await init(deployer);
+  await bind(deployer);
 
   console.log(`${network} ibc_address:`, IBCHandler.address);
 };

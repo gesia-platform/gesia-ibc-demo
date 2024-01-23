@@ -9,7 +9,7 @@ import {Height} from "../proto/Client.sol";
 import {CarbonOffsetVoucherPacket} from "../proto/CarbonOffsetVoucherPacket.sol";
 
 contract CarbonOffsetVoucher is ERC1155, IBCAppBase, Ownable {
-    uint64 private constant TIMEOUT_HEIGHT = 200;
+    uint64 private constant TIMEOUT_HEIGHT = 10_000;
 
     IBCHandler private immutable ibcHandler;
 
@@ -44,10 +44,9 @@ contract CarbonOffsetVoucher is ERC1155, IBCAppBase, Ownable {
         string calldata sourceChannel
     ) external {
         require(
-            account == _msgSender() ||  isApprovedForAll(account, _msgSender()),
+            account == _msgSender() || isApprovedForAll(account, _msgSender()),
             "you donot have permission to transfer from account."
         );
-
 
         // you have to escrow not directly burning if you want lock while transfered dest chain.
         _burn(account, tokenId, amount);
@@ -104,5 +103,17 @@ contract CarbonOffsetVoucher is ERC1155, IBCAppBase, Ownable {
     // onlyIBC modifier checks if a caller matches `ibcAddress()`
     function ibcAddress() public view virtual override returns (address) {
         return address(ibcHandler);
+    }
+
+    function onChanOpenInit(
+        IIBCModule.MsgOnChanOpenInit calldata msg_
+    ) external virtual override onlyIBC returns (string memory) {
+        return "gesia";
+    }
+
+    function onChanOpenTry(
+        IIBCModule.MsgOnChanOpenTry calldata msg_
+    ) external virtual override onlyIBC returns (string memory) {
+        return "gesia";
     }
 }

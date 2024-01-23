@@ -11,16 +11,16 @@ module.exports = {
     eth0: {
       host: "127.0.0.1",
       port: 8545,
-      network_id: "15",
+      network_id: 15,
       websockets: true,
       provider: () => new HDWalletProvider(privateKey, "http://127.0.0.1:8545"),
     },
     eth1: {
       host: "127.0.0.1",
-      port: 8555,
-      network_id: "16",
+      port: 8645,
+      network_id: 16,
       websockets: true,
-      provider: () => new HDWalletProvider(privateKey, "http://127.0.0.1:8555"),
+      provider: () => new HDWalletProvider(privateKey, "http://127.0.0.1:8645"),
     },
   },
   compilers: {
