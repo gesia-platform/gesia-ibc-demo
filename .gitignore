@@ -1,4 +1,4 @@
 temp/**
-node_modules/**
 !temp/.gitkeep
-build/**
+**/node_modules
+**/build
