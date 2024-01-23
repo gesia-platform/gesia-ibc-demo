@@ -17,11 +17,11 @@ const PortTransfer = "transfer";
 const MockClientType = "mock-client";
 
 const deployCore = async (deployer) => {
+  await deployer.deploy(IBCChannelPacketTimeout);
   await deployer.deploy(IBCClient);
   await deployer.deploy(IBCConnectionSelfStateNoValidation);
   await deployer.deploy(IBCChannelHandshake);
   await deployer.deploy(IBCChannelPacketSendRecv);
-  await deployer.deploy(IBCChannelPacketTimeout);
 
   await deployer.deploy(
     IBCHandler,

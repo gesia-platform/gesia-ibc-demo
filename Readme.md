@@ -19,18 +19,17 @@ significant portion of the golang implementation is implemented in solidity.
 npm install
 
 # 2. Build
-npx truffle compile
-cd chains && docker compose build --no-cache && cd ..
+npm run compile
+
+# build relayer
 cd relayer && go build -o ../build/relayer . && cd ..
 
-# 3. Run chains A, B
+# 3. Run chains eth0, eth1
 
 cd chains && docker compose up -d --build && cd ..
 
 # 4. Migrate all contracts
-
-npx truffle migrate --network eth0
-npx truffle migrate --network eth1
+npm run migrate
 
 # 5. Handshake relayer between chains
 # Note: you should update ibc_address field to ${logged form #4 ibc_address: {}} at configs/relayer/chains/*.json
@@ -47,4 +46,11 @@ npx truffle exec test/0-mint.js --network eth0
 npx truffle exec test/1-send.js --network eth0
 
 # then you can check minted token balance each chain
+
+# yarn truffle console --network eth0
+# yarn truffle console --network eth1
+
+# let voucher = await CarbonOffsetVoucher.deployed();
+
+# voucher.balanceOf("0xa89F47C6b463f74d87572b058427dA0A13ec5425",1);
 ```

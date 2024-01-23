@@ -20,12 +20,6 @@ module.exports = async (callback) => {
     );
 
     console.log(result);
-
-    const sendPacket = await miniToken.getPastEvents("SendPacket", {
-      fromBlock: 0,
-    });
-
-    console.log(sendPacket);
   } catch (error) {
     console.error(error);
   }

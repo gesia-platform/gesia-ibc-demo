@@ -1,13 +1,10 @@
 #!/bin/sh
 
-/usr/local/bin/geth \
-  --password /root/password \
-  --syncmode full \
-  --http --http.vhosts "*" --http.addr "0.0.0.0" --http.port "8545" --http.api web3,eth,net,personal,miner,txpool --http.corsdomain '*' \
-  --ws --ws.api eth,net,web3,personal,txpool --ws.addr "0.0.0.0" --ws.port "8546" --ws.origins '*' \
-  --datadir /root/.ethereum --networkid "16" \
-  --nodiscover \
-  --unlock "0xa89F47C6b463f74d87572b058427dA0A13ec5425" \
-  --allow-insecure-unlock \
-  --mine --miner.etherbase=0xa89F47C6b463f74d87572b058427dA0A13ec5425 \
+node "/app/ganache-core.docker.cli.js" \
+  --chainId 16 \
+  --networkId 16 \
+  --db /root/.ethereum \
+  --defaultBalanceEther 1000000 \
+  --mnemonic "math razor capable expose worth grape metal sunset metal sudden usage scheme" \
+  --blockTime 2 \
   $@

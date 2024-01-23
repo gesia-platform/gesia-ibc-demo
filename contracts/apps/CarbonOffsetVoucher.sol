@@ -6,7 +6,6 @@ import "./IBCAppBase.sol";
 import "../core/25-handler/IBCHandler.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import {Height} from "../proto/Client.sol";
-import {CarbonOffsetVoucherPacket} from "../proto/CarbonOffsetVoucherPacket.sol";
 
 contract CarbonOffsetVoucher is ERC1155, IBCAppBase, Ownable {
     uint64 private constant TIMEOUT_HEIGHT = 10_000;
@@ -15,7 +14,7 @@ contract CarbonOffsetVoucher is ERC1155, IBCAppBase, Ownable {
 
     constructor(
         IBCHandler ibcHandler_
-    ) ERC1155("https://game.example/api/item/{id}.json") {
+    ) ERC1155("https://gesiaplatform.com/vouchers/{id}.json") {
         ibcHandler = ibcHandler_;
     }
 
@@ -25,14 +24,6 @@ contract CarbonOffsetVoucher is ERC1155, IBCAppBase, Ownable {
         uint256 amount
     ) external onlyOwner {
         _mint(account, id, amount, "");
-    }
-
-    function _bytesToAddress(
-        bytes memory data
-    ) private pure returns (address addr) {
-        assembly {
-            addr := div(mload(add(data, 32)), 0x1000000000000000000000000)
-        }
     }
 
     function sendTransfer(
@@ -51,22 +42,14 @@ contract CarbonOffsetVoucher is ERC1155, IBCAppBase, Ownable {
         // you have to escrow not directly burning if you want lock while transfered dest chain.
         _burn(account, tokenId, amount);
 
-        // pack data
-        bytes memory packetData = CarbonOffsetVoucherPacket.encode(
-            CarbonOffsetVoucherPacket.Data({
-                amount: amount,
-                sender: abi.encodePacked(account),
-                receiver: abi.encodePacked(receiver),
-                id: tokenId
-            })
-        );
+        bytes memory packet = _encode(tokenId, account, receiver, amount);
 
         ibcHandler.sendPacket(
             sourcePort,
             sourceChannel,
             Height.Data({revision_number: 0, revision_height: TIMEOUT_HEIGHT}),
             0,
-            packetData
+            packet
         );
     }
 
@@ -75,12 +58,17 @@ contract CarbonOffsetVoucher is ERC1155, IBCAppBase, Ownable {
         Packet.Data calldata packet,
         address
     ) external virtual override onlyIBC returns (bytes memory acknowledgement) {
-        CarbonOffsetVoucherPacket.Data memory data = CarbonOffsetVoucherPacket
-            .decode(packet.data);
+        (
+            uint256 tokenId,
+            address sender,
+            address receiver,
+            uint256 amount
+        ) = _decode(packet.data);
 
         acknowledgement = new bytes(1);
 
-        _mint(_bytesToAddress(data.receiver), data.id, data.amount, "");
+        _mint(receiver, tokenId, amount, "");
+
         acknowledgement[0] = 0x01;
         return acknowledgement;
     }
@@ -91,13 +79,44 @@ contract CarbonOffsetVoucher is ERC1155, IBCAppBase, Ownable {
         bytes calldata acknowledgement,
         address
     ) external virtual override onlyIBC {
-        if (acknowledgement[0] != 0x01) {
-            /** 실패 */
-            CarbonOffsetVoucherPacket.Data
-                memory data = CarbonOffsetVoucherPacket.decode(packet.data);
+        (
+            uint256 tokenId,
+            address sender,
+            address receiver,
+            uint256 amount
+        ) = _decode(packet.data);
 
-            _mint(_bytesToAddress(data.receiver), data.id, data.amount, "");
+        if (acknowledgement[0] != 0x01) {
+            // Note: refund
+            _mint(sender, tokenId, amount, "");
         }
+    }
+
+    function hexStringToAddress(
+        string memory addrHexString
+    ) internal pure returns (address) {
+        bytes memory addrBytes = bytes(addrHexString);
+        if (addrBytes.length != 42) {
+            return (address(0));
+        } else if (addrBytes[0] != "0" || addrBytes[1] != "x") {
+            return (address(0));
+        }
+        uint256 addr = 0;
+        unchecked {
+            for (uint256 i = 2; i < 42; i++) {
+                uint256 c = uint256(uint8(addrBytes[i]));
+                if (c >= 48 && c <= 57) {
+                    addr = addr * 16 + (c - 48);
+                } else if (c >= 97 && c <= 102) {
+                    addr = addr * 16 + (c - 87);
+                } else if (c >= 65 && c <= 70) {
+                    addr = addr * 16 + (c - 55);
+                } else {
+                    return (address(0));
+                }
+            }
+        }
+        return (address(uint160(addr)));
     }
 
     // onlyIBC modifier checks if a caller matches `ibcAddress()`
@@ -115,5 +134,51 @@ contract CarbonOffsetVoucher is ERC1155, IBCAppBase, Ownable {
         IIBCModule.MsgOnChanOpenTry calldata msg_
     ) external virtual override onlyIBC returns (string memory) {
         return "gesia";
+    }
+
+    function _encode(
+        uint256 tokenId,
+        address sender,
+        address receiver,
+        uint256 amount
+    ) internal pure returns (bytes memory) {
+        bytes memory data = new bytes(104);
+
+        assembly {
+            // first 32 bytes allocated for length of data
+            mstore(add(data, 32), tokenId)
+
+            // left 20bytes replace to content
+            mstore(add(data, 64), shl(96, sender))
+
+            mstore(add(data, 84), shl(96, receiver))
+
+            mstore(add(data, 104), amount)
+        }
+
+        return data;
+    }
+
+    function _decode(
+        bytes memory data
+    )
+        internal
+        pure
+        returns (
+            uint256 tokenId,
+            address sender,
+            address receiver,
+            uint256 amount
+        )
+    {
+        assembly {
+            tokenId := mload(add(data, 32))
+
+            sender := mload(add(data, 52))
+
+            receiver := mload(add(data, 72))
+
+            amount := mload(add(data, 104))
+        }
     }
 }

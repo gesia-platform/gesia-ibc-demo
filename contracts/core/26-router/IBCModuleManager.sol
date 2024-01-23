@@ -13,9 +13,9 @@ contract IBCModuleManager is IBCHost, Context {
      * @dev lookupModuleByPort will return the IBCModule along with the capability associated with a given portID
      */
     function lookupModuleByPort(string memory portId) internal view virtual returns (IIBCModule) {
-        address module = lookupModule(portCapabilityPath(portId));
-        require(module != address(0), "module not found");
-        return IIBCModule(module);
+        (address[] storage modules, bool found) = lookupModules(portCapabilityPath(portId));
+        require(found);
+        return IIBCModule(modules[0]);
     }
 
     /**
@@ -27,39 +27,47 @@ contract IBCModuleManager is IBCHost, Context {
         virtual
         returns (IIBCModule)
     {
-        address module = lookupModule(channelCapabilityPath(portId, channelId));
-        require(module != address(0), "module not found");
-        return IIBCModule(module);
+        (address[] storage modules, bool found) = lookupModules(channelCapabilityPath(portId, channelId));
+        require(found);
+        return IIBCModule(modules[0]);
     }
 
     /**
      * @dev claimCapability allows the IBC app module to claim a capability that core IBC passes to it
      */
-    function claimCapability(string memory name, address addr) internal {
-        require(capabilities[name] == address(0), "capability already claimed");
-        capabilities[name] = addr;
+    function claimCapability(bytes memory name, address addr) internal {
+        for (uint32 i = 0; i < capabilities[name].length; i++) {
+            require(capabilities[name][i] != addr);
+        }
+        capabilities[name].push(addr);
     }
 
     /**
      * @dev authenticateCapability attempts to authenticate a given name from a caller.
      * It allows for a caller to check that a capability does in fact correspond to a particular name.
      */
-    function authenticateCapability(string memory name) internal view returns (bool) {
-        return _msgSender() == capabilities[name];
+    function authenticateCapability(bytes memory name) internal view returns (bool) {
+        address caller = _msgSender();
+        for (uint32 i = 0; i < capabilities[name].length; i++) {
+            if (capabilities[name][i] == caller) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
-     * @dev lookupModule will return the IBCModule addresses bound to a given name.
+     * @dev lookupModules will return the IBCModule addresses bound to a given name.
      */
-    function lookupModule(string memory name) internal view returns (address) {
-        return capabilities[name];
+    function lookupModules(bytes memory name) internal view returns (address[] storage, bool) {
+        return (capabilities[name], capabilities[name].length > 0);
     }
 
     /**
      * @dev portCapabilityPath returns the path under which owner module address associated with a port should be stored.
      */
-    function portCapabilityPath(string memory portId) internal pure returns (string memory) {
-        return portId;
+    function portCapabilityPath(string memory portId) internal pure returns (bytes memory) {
+        return abi.encodePacked(portId);
     }
 
     /**
@@ -68,9 +76,9 @@ contract IBCModuleManager is IBCHost, Context {
     function channelCapabilityPath(string memory portId, string memory channelId)
         internal
         pure
-        returns (string memory)
+        returns (bytes memory)
     {
-        return string.concat(portId, "/", channelId);
+        return abi.encodePacked(portId, "/", channelId);
     }
 
     /**
