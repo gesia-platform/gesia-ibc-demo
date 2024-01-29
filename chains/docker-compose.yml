@@ -1,16 +1,23 @@
 version: "3.3"
 services:
-  eth0:
-    build: ./eth0
+  neutral:
+    platform: linux/amd64
+    build: ./neutral
     ports:
       - 8545:8545
-      - 8546:8546
     extra_hosts:
       - "host.docker.internal:host-gateway"
-  eth1:
-    build: ./eth1
+  emissions:
+    platform: linux/amd64
+    build: ./emissions
     extra_hosts:
       - "host.docker.internal:host-gateway"
     ports:
       - 8645:8545
-      - 8646:8546
+  offset:
+    platform: linux/amd64
+    build: ./offset
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - 8745:8545

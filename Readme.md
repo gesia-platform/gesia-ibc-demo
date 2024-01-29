@@ -12,45 +12,70 @@ significant portion of the golang implementation is implemented in solidity.
 
 ![Geasia Diagram](./docs/assets/diagram.jpg)
 
-## Setup & Deploy & Test
+## Test
+
+### 1. Build & Run Chains & Migration
 
 ```bash
-# 1. Install dependencies
+# install all dependencies
 npm install
 
-# 2. Build
+# complie all contracts
 npm run compile
 
-# build relayer
-cd relayer && go build -o ../build/relayer . && cd ..
-
-# 3. Run chains eth0, eth1
-
+# run neutral, emissions, offset chains
 cd chains && docker compose up -d --build && cd ..
 
-# 4. Migrate all contracts
-npm run migrate
+# migrate all contracts for each chains
+npm run migrate:neutral
+npm run migrate:emissions
+npm run migrate:offset
+```
 
-# 5. Handshake relayer between chains
-# Note: you should update ibc_address field to ${logged form #4 ibc_address: {}} at configs/relayer/chains/*.json
-./scripts/relayer/handshake.sh
+### 2. Setup Relayer
 
-# 6. Start relayer for bridging
-./scripts/relayer/start.sh
+### Pre Check Points
 
-# 7. Mint carbon offset voucher NFT(ERC1155)
-npx truffle exec test/0-mint.js --network eth0
+1. migrate log에 확인되는 `OwnableIBCHandler` 주소, `relayer/configs/**/chains/**`의 field `ibc_address`에 업데이트 하세요.
 
-# 8. Send packet (store packet request it self(source chain))
-# Note: relayer will transfer packet to dest chain from source chain.
-npx truffle exec test/1-send.js --network eth0
+2. relayer를 여러번 연결하여 Client, Channel, Connection이 중복 생성되는 경우 id sufflix 숫자를 1씩 업데이트 하세요.
 
-# then you can check minted token balance each chain
 
-# yarn truffle console --network eth0
-# yarn truffle console --network eth1
+```bash
+### Processing
 
-# let voucher = await CarbonOffsetVoucher.deployed();
+```bash
+cd relayer
 
-# voucher.balanceOf("0xa89F47C6b463f74d87572b058427dA0A13ec5425",1);
+# build relayer binary for linux/amd64
+GOARCH=amd64 GOOS=linux go build -o ./relayer .
+
+# you can up with -d (background) option
+docker compose up emissions_neutral --build
+# docker compose up offset_neutral --build
+
+cd ..
+```
+
+### 3. Test
+
+test file의 channel은 다시 확인해주세요.
+
+```bash
+yarn truffle exec test/neutral.test.js --network neutral
+yarn truffle exec test/calc.emissions.test.js --network emissions
+
+yarn truffle exec test/calc.js --network emissions
+
+yarn truffle exec test/calc.emissions.test.js --network emissions
+yarn truffle exec test/neutral.test.js --network neutral
+
+
+yarn truffle exec test/neutral.test.js --network neutral
+yarn truffle exec test/donate.offset.test.js --network offset
+
+yarn truffle exec test/donate.js --network offset
+
+yarn truffle exec test/donate.offset.test.js --network offset
+yarn truffle exec test/neutral.test.js --network neutral
 ```

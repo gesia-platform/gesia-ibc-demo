@@ -6,17 +6,19 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "compile": "truffle compile --all --reset",
-    "migrate": "truffle migrate --network eth0 && truffle migrate --network eth1"
+    "migrate:neutral": "truffle migrate --network neutral --f 1 --to 1",
+    "migrate:emissions": "truffle migrate --network emissions --f 2 --to 2",
+    "migrate:offset": "truffle migrate --network offset --f 3 --to 3"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@truffle/hdwallet-provider": "1.4.1",
-    "truffle": "^5.4.3",
     "@openzeppelin/contracts": "^4.4.2",
+    "@truffle/hdwallet-provider": "1.4.1",
     "solidity-bytes-utils": "0.8.0",
     "solidity-mpt": "^0.1.0",
-    "solidity-rlp": "^2.0.8"
+    "solidity-rlp": "^2.0.8",
+    "truffle": "^5.4.3"
   }
 }

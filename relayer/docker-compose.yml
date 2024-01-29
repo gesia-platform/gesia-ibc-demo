@@ -1,0 +1,23 @@
+version: "3.3"
+services:
+  emissions_neutral:
+    platform: linux/amd64      
+    build: 
+      context: .
+      args:
+        - CHAINID_ONE=emissions
+        - CHAINID_TWO=neutral
+        - PATH_NAME=emissions_neutral
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+      
+  offset_neutral:
+    platform: linux/amd64
+    build: 
+      context: .
+      args:
+        - CHAINID_ONE=offset
+        - CHAINID_TWO=neutral
+        - PATH_NAME=offset_neutral
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

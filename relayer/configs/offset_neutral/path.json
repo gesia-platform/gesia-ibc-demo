@@ -1,19 +1,19 @@
 {
   "src": {
-    "chain-id": "eth0",
+    "chain-id": "offset",
     "client-id": "mock-client-0",
     "connection-id": "connection-0",
     "channel-id": "channel-0",
-    "port-id": "transfer",
+    "port-id": "offset",
     "order": "unordered",
     "version": "gesia"
   },
   "dst": {
-    "chain-id": "eth1",
-    "client-id": "mock-client-0",
-    "connection-id": "connection-0",
-    "channel-id": "channel-0",
-    "port-id": "transfer",
+    "chain-id": "neutral",
+    "client-id": "mock-client-1",
+    "connection-id": "connection-1",
+    "channel-id": "channel-1",
+    "port-id": "neutral",
     "order": "unordered",
     "version": "gesia"
   },

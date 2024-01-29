@@ -1,10 +1,10 @@
 #!/bin/sh
 
 node "/app/ganache-core.docker.cli.js" \
-  --chainId 15 \
-  --networkId 15 \
+  --chainId 17 \
+  --networkId 17 \
   --db /root/.ethereum \
   --defaultBalanceEther 1000000 \
-  --mnemonic "math razor capable expose worth grape metal sunset metal sudden usage scheme" \
+  --mnemonic "sign addict identify chunk urban captain leg curious purpose treat cheap pave" \
   --blockTime 2 \
   $@

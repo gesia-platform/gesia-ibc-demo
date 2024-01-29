@@ -1,9 +1,9 @@
 {
   "chain": {
     "@type": "/relayer.chains.ethereum.config.ChainConfig",
-    "chain_id": "eth1",
+    "chain_id": "emissions",
     "eth_chain_id": 16,
-    "rpc_addr": "http://localhost:8645",
+    "rpc_addr": "http://host.docker.internal:8645",
     "signer": {
       "@type": "/relayer.chains.ethereum.signers.hd.SignerConfig",
       "mnemonic": "math razor capable expose worth grape metal sunset metal sudden usage scheme",

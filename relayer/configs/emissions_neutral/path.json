@@ -1,0 +1,23 @@
+{
+  "src": {
+    "chain-id": "emissions",
+    "client-id": "mock-client-0",
+    "connection-id": "connection-0",
+    "channel-id": "channel-0",
+    "port-id": "emissions",
+    "order": "unordered",
+    "version": "gesia"
+  },
+  "dst": {
+    "chain-id": "neutral",
+    "client-id": "mock-client-0",
+    "connection-id": "connection-0",
+    "channel-id": "channel-0",
+    "port-id": "neutral",
+    "order": "unordered",
+    "version": "gesia"
+  },
+  "strategy": {
+    "type": "naive"
+  }
+}

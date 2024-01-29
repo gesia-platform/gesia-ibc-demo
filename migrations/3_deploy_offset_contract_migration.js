@@ -1,4 +1,3 @@
-const CarbonOffsetVoucher = artifacts.require("CarbonOffsetVoucher");
 const IBCClient = artifacts.require("IBCClient");
 const IBCConnectionSelfStateNoValidation = artifacts.require(
   "IBCConnectionSelfStateNoValidation"
@@ -13,12 +12,23 @@ const IBCChannelPacketTimeout = artifacts.require(
 );
 const MockClient = artifacts.require("MockClient.sol");
 
-const PortTransfer = "transfer";
-const MockClientType = "mock-client";
+const CarbonNeutralApplication = artifacts.require(
+  "CarbonNeutralApplication.sol"
+);
 
-const deployCore = async (deployer) => {
-  await deployer.deploy(IBCChannelPacketTimeout);
+const CarbonOffset = artifacts.require("CarbonOffset.sol");
+
+const MockClientType = "mock-client";
+const PortOffsetToNeutral = "offset";
+
+const EmptyAddress = "0x0000000000000000000000000000000000000000";
+
+const ProjectName = "Submit Power Group";
+const ProjectSymbol = "EOP";
+
+const deployIBCCore = async (deployer) => {
   await deployer.deploy(IBCClient);
+  await deployer.deploy(IBCChannelPacketTimeout);
   await deployer.deploy(IBCConnectionSelfStateNoValidation);
   await deployer.deploy(IBCChannelHandshake);
   await deployer.deploy(IBCChannelPacketSendRecv);
@@ -36,24 +46,29 @@ const deployCore = async (deployer) => {
 };
 
 const deployApp = async (deployer) => {
-  await deployer.deploy(CarbonOffsetVoucher, IBCHandler.address);
+  await deployer.deploy(
+    CarbonNeutralApplication,
+    IBCHandler.address,
+    EmptyAddress
+  );
+
+  await deployer.deploy(
+    CarbonOffset,
+    ProjectName,
+    ProjectSymbol,
+    CarbonNeutralApplication.address
+  );
 };
 
-const bind = async (deployer) => {
+const setupIBC = async () => {
   const ibcHandler = await IBCHandler.deployed();
 
-  await ibcHandler.bindPort(PortTransfer, CarbonOffsetVoucher.address);
-  console.log("binded port: ", PortTransfer);
-
+  await ibcHandler.bindPort(PortOffsetToNeutral, CarbonNeutralApplication.address);
   await ibcHandler.registerClient(MockClientType, MockClient.address);
-
-  console.log("registered client: ", MockClientType, MockClient.address);
 };
 
-module.exports = async function (deployer, network) {
-  await deployCore(deployer);
+module.exports = async function (deployer, _) {
+  await deployIBCCore(deployer);
   await deployApp(deployer);
-  await bind(deployer);
-
-  console.log(`${network} ibc_address:`, IBCHandler.address);
+  await setupIBC();
 };

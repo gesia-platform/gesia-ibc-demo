@@ -1,15 +1,15 @@
 {
   "chain": {
     "@type": "/relayer.chains.ethereum.config.ChainConfig",
-    "chain_id": "eth0",
+    "chain_id": "neutral",
     "eth_chain_id": 15,
-    "rpc_addr": "http://localhost:8545",
+    "rpc_addr": "http://host.docker.internal:8545",
     "signer": {
       "@type": "/relayer.chains.ethereum.signers.hd.SignerConfig",
-      "mnemonic": "math razor capable expose worth grape metal sunset metal sudden usage scheme",
+      "mnemonic": "worth winter festival wealth place advance raise salute fever retire process announce",
       "path": "m/44'/60'/0'/0/0"
     },
-    "ibc_address": "0x727A5648832D2b317925CE043eA9b7fE04B4CD55",
+    "ibc_address": "0x87eeBfbafB7f29Ae60d723dD3b5800cBb940371D",
     "initial_send_checkpoint": 1,
     "initial_recv_checkpoint": 1,
     "enable_debug_trace": true,

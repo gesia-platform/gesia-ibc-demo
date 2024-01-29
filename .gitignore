@@ -1,4 +1,4 @@
-temp/**
-!temp/.gitkeep
 **/node_modules
 **/build
+
+relayer/relayer
