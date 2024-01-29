@@ -1,4 +1,4 @@
-module demo
+module gesia-ibc-demo
 
 go 1.20
 
