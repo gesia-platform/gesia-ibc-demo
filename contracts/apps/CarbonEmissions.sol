@@ -6,8 +6,6 @@ import "./CarbonNeutralApplication.sol";
 
 /** for each emissions category */
 contract CarbonEmissions is ERC1155 {
-    string public constant IBC_PORT = "emissions";
-
     address public immutable calculator;
     CarbonNeutralApplication public immutable carbonNeutralApplication;
 

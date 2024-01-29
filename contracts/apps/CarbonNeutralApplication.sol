@@ -46,7 +46,7 @@ contract CarbonNeutralApplication is IBCAppBase {
         _;
     }
 
-    /**
+     /**
      * 배출 머클에서 중립 머클로
      */
     function transferEmissionsToNeutral(
@@ -86,6 +86,13 @@ contract CarbonNeutralApplication is IBCAppBase {
 
     /**
      * 상쇄 머클에서 중립 머클로
+     *
+     * @param carbonOffset The CarbonERC1155 contract that is donatable consumer-level offset token.
+     * @param donator The donator(token holder).
+     * @param projectTokenId The tokenId(projectId) want to donate, owned by donator.
+     * @param donationTokenAmount The tokenAmount want to donate, enough for donator.
+     * @param applicationTokenId The applicationId want to donate. (id is managed at emissions or offset or frontend)
+     * @param sourceChannel The IBC channelId confirmed in expected IBC relayer
      */
     function transferOffsetToNeutral(
         address carbonOffset,
