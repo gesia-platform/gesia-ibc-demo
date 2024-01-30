@@ -21,10 +21,10 @@ contract CarbonOffset is ERC1155 {
 
     function mint(
         address recipient,
-        uint256 applicationId,
-        uint256 carbonAmount
+        uint256 projectTokenId,
+        uint256 carbonOffsetAmount
     ) external {
-        _mint(recipient, applicationId, carbonAmount, "");
+        _mint(recipient, projectTokenId, carbonOffsetAmount, "");
     }
 
     function donate(

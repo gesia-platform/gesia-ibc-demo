@@ -23,9 +23,6 @@ const PortOffsetToNeutral = "offset";
 
 const EmptyAddress = "0x0000000000000000000000000000000000000000";
 
-const ProjectName = "Submit Power Group";
-const ProjectSymbol = "EOP";
-
 const deployIBCCore = async (deployer) => {
   await deployer.deploy(IBCClient);
   await deployer.deploy(IBCChannelPacketTimeout);
@@ -52,18 +49,16 @@ const deployApp = async (deployer) => {
     EmptyAddress
   );
 
-  await deployer.deploy(
-    CarbonOffset,
-    ProjectName,
-    ProjectSymbol,
-    CarbonNeutralApplication.address
-  );
+  await deployer.deploy(CarbonOffset, CarbonNeutralApplication.address);
 };
 
 const setupIBC = async () => {
   const ibcHandler = await IBCHandler.deployed();
 
-  await ibcHandler.bindPort(PortOffsetToNeutral, CarbonNeutralApplication.address);
+  await ibcHandler.bindPort(
+    PortOffsetToNeutral,
+    CarbonNeutralApplication.address
+  );
   await ibcHandler.registerClient(MockClientType, MockClient.address);
 };
 

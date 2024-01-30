@@ -3,26 +3,20 @@ const CarbonEmissionsHeatingCalculator = artifacts.require(
 );
 const CarbonEmissions = artifacts.require("CarbonEmissions");
 
-module.exports = async (callback) => {
-  const accounts = await web3.eth.getAccounts();
-  const account = accounts[0];
-  console.log("account:", account);
+const IBC_CHANNEL = "channel-0";
+const APPLICATION_ID = 1;
 
+module.exports = async (callback) => {
   const carbonEmissionsHeatingCalculator =
     await CarbonEmissionsHeatingCalculator.deployed();
 
-  const channel = "channel-1";
-  const port = "emissions";
-  
-  const applicationId = 1;
-  const amount = 100;
+  let heatingAmount = 15;
 
   const result = await carbonEmissionsHeatingCalculator.calculate(
-    amount,
-    applicationId,
+    heatingAmount,
+    APPLICATION_ID,
     CarbonEmissions.address,
-    port,
-    channel
+    IBC_CHANNEL
   );
 
   console.log(result, "caculated");

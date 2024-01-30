@@ -62,10 +62,13 @@ cd ..
 test file의 channel은 다시 확인해주세요.
 
 ```bash
-yarn truffle exec test/neutral.test.js --network neutral
-yarn truffle exec test/calc.emissions.test.js --network emissions
+yarn truffle exec test/1-calc.js --network emissions
+yarn truffle test test/1-calc.emissions.test.js    --compile-none  --network emissions --migrate-none
+yarn truffle test test/1-calc.neutral.test.js    --compile-none  --network neutral --migrate-none
 
-yarn truffle exec test/calc.js --network emissions
+
+yarn truffle exec test/2-donate.js  --network offset
+
 
 yarn truffle exec test/calc.emissions.test.js --network emissions
 yarn truffle exec test/neutral.test.js --network neutral
