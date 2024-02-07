@@ -56,8 +56,7 @@ services:
     networks:
       - emissions-network
     depends_on:
-      emissions:
-        condition: service_healthy
+      - emissions
 
 networks:
   emissions-network:

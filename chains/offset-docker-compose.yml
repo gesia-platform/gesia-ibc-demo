@@ -56,8 +56,7 @@ services:
     networks:
       - offset-network
     depends_on:
-      offset:
-        condition: service_healthy
+      - offset
 
 networks:
   offset-network:

@@ -56,8 +56,7 @@ services:
     networks:
       - neutral-network
     depends_on:
-      neutral:
-        condition: service_healthy
+      - neutral
 
 networks:
   neutral-network:
