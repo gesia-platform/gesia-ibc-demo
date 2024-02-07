@@ -1,0 +1,64 @@
+version: "3.3"
+services:
+  init-account:
+    image: ethereum/client-go:v1.13.11
+    volumes:
+      - ./config/init-new-account.sh:/root/init-new-account.sh
+      - ./emissions/ethereum:/root/.ethereum
+    entrypoint: "/root/init-new-account.sh"
+
+  init-network:
+    image: ethereum/client-go:v1.13.11
+    volumes:
+      - ./lib/jq:/usr/local/bin/jq
+      - ./config/init-network.sh:/root/init-network.sh
+      - ./emissions/ethereum:/root/.ethereum
+    environment:
+      - NETWORK_CHAIN_ID=5555
+      - NETWORK_CLIQUE_PERIOD=15
+      - NETWORK_CLIQUE_EPOCH=30000
+      - NETWORK_ALLOC_BALANCE=0x200000000000000000000000000000000000000000000000000000000000000
+    depends_on:
+      - init-account
+    entrypoint: "/root/init-network.sh"
+
+  emissions:
+    platform: linux/amd64
+    build: ./emissions
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - 30403:30303
+      - 8645:8545
+      - 8646:8546
+    volumes:
+      - ./emissions/ethereum:/root/.ethereum
+    environment:
+      - MY_IP=121.166.253.99
+      - NETWORK_CHAIN_ID=5555
+      - CHAIN_PORT=8545
+      - CHAIN_WS_PORT=8546
+      - CHAIN_NODE_PORT=30303
+      - CHAIN_ALLOW_API=personal,miner,eth,net,txpool,debug,clique
+      - CHAIN_NET_STATS_URL=emissions:EMISSIONS@emissions-netstats:3000
+    networks:
+      - emissions-network
+    depends_on:
+      - init-account
+      - init-network
+
+  emissions-netstats:
+    image: kamael/eth-netstats
+    ports:
+      - '4600:3000'
+    environment:
+      - WS_SECRET=EMISSIONS
+    networks:
+      - emissions-network
+    depends_on:
+      emissions:
+        condition: service_healthy
+
+networks:
+  emissions-network:
+    driver: bridge

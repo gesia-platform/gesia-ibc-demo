@@ -2,3 +2,12 @@
 **/build
 
 relayer/relayer
+
+.DS_Store
+
+chains/emissions/ethereum
+chains/emissions/ethereum/*
+chains/neutral/ethereum
+chains/neutral/ethereum/*
+chains/offset/ethereum
+chains/offset/ethereum/*
