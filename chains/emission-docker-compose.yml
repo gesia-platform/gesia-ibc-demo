@@ -34,7 +34,7 @@ services:
     volumes:
       - ./emissions/ethereum:/root/.ethereum
     environment:
-      - MY_IP=121.166.253.99
+      - MY_IP=3.39.139.167
       - NETWORK_CHAIN_ID=5555
       - CHAIN_PORT=8545
       - CHAIN_WS_PORT=8546

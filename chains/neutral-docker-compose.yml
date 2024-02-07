@@ -34,7 +34,7 @@ services:
     volumes:
       - ./neutral/ethereum:/root/.ethereum
     environment:
-      - MY_IP=121.166.253.99
+      - MY_IP=13.209.79.57
       - NETWORK_CHAIN_ID=5555
       - CHAIN_PORT=8545
       - CHAIN_WS_PORT=8546
