@@ -17,10 +17,4 @@ ADD ./configs /configs
 ADD ./scripts/run.sh /run.sh
 ADD ./scripts/util.sh /util.sh
 
-ADD ./go.mod /go.mod
-ADD ./go.sum /go.sum
-ADD ./main.go /main.go
-
-RUN mkdir /.relayer
-
 ENTRYPOINT ["/run.sh"]
