@@ -129,6 +129,7 @@ contract IBCChannelPacketSendRecv is IBCModuleManager, IIBCChannelPacketSendRecv
         ConnectionEnd.Data storage connection = connections[channel.connection_hops[0]];
         require(connection.state == ConnectionEnd.State.STATE_OPEN, "connection state is not OPEN");
 
+        /*
         require(
             msg_.packet.timeout_height.revision_height == 0 || block.number < msg_.packet.timeout_height.revision_height,
             "block height >= packet timeout height"
@@ -136,7 +137,7 @@ contract IBCChannelPacketSendRecv is IBCModuleManager, IIBCChannelPacketSendRecv
         require(
             msg_.packet.timeout_timestamp == 0 || block.timestamp * 1e9 < msg_.packet.timeout_timestamp,
             "block timestamp >= packet timeout timestamp"
-        );
+        );*/
 
         require(
             verifyPacketCommitment(
