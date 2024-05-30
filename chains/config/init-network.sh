@@ -33,6 +33,15 @@ fi
 
 if [ -s "$network_path/$network_modified_file" ]; then
     echo "Network already exists"
+    output=$(geth init "$network_path/$network_modified_file" 2>&1)
+    if echo "$output" | grep -q "Successfully"; then
+        echo "Network initialized"
+        exit 0
+    else
+        echo "Failed to init network."
+        echo "$output"
+        exit 1
+    fi
     exit 0
 fi
 
