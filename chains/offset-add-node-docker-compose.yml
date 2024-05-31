@@ -1,0 +1,52 @@
+version: '3.3'
+services:
+  init-account:
+    image: ethereum/client-go:v1.13.11
+    volumes:
+      - ./config/init-new-account.sh:/root/init-new-account.sh
+      - ./offset/ethereum:/root/.ethereum
+    entrypoint: '/root/init-new-account.sh'
+
+  init-network:
+    image: ethereum/client-go:v1.13.11
+    volumes:
+      - ./lib/jq:/usr/local/bin/jq
+      - ./config/init-network.sh:/root/init-network.sh
+      - ./offset/ethereum:/root/.ethereum
+    environment:
+      - NETWORK_CHAIN_ID=5555
+      - NETWORK_CLIQUE_PERIOD=15
+      - NETWORK_CLIQUE_EPOCH=30000
+      - NETWORK_ALLOC_BALANCE=0x200000000000000000000000000000000000000000000000000000000000000
+    depends_on:
+      - init-account
+    entrypoint: '/root/init-network.sh'
+
+  offset:
+    platform: linux/amd64
+    build: ./offset
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    ports:
+      - 30203:30303
+      - 8445:8545
+      - 8446:8546
+    volumes:
+      - ./offset/ethereum:/root/.ethereum
+    environment:
+      - MY_IP=
+      - NETWORK_CHAIN_ID=5555
+      - CHAIN_PORT=8545
+      - CHAIN_WS_PORT=8546
+      - CHAIN_NODE_PORT=30303
+      - CHAIN_ALLOW_API=personal,miner,eth,net,txpool,debug,clique
+      - CHAIN_NET_STATS_URL=offset:OFFSET@43.200.218.66:4400
+    networks:
+      - offset-network
+    depends_on:
+      - init-account
+      - init-network
+
+networks:
+  offset-network:
+    driver: bridge
